@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows.Media;
 using AuraLedHelper.Core;
-using GalaSoft.MvvmLight.CommandWpf;
+using Prism.Commands;
 
 namespace AuraLedHelper
 {
@@ -12,16 +13,19 @@ namespace AuraLedHelper
         private AuraMode _operationMode;
         private bool _enabled;
         private Color _color;
+        private bool _hasError;
+        private string _errorMessage;
 
         public MainViewModel()
         {
-            ApplyCommand = new RelayCommand(Apply);
-            ResetCommand = new RelayCommand(Reset);
+            ApplyCommand = new DelegateCommand<SettingsLocation?>(Apply);
+            LoadCommand = new DelegateCommand<SettingsLocation?>(Load);
+            ClearCommand = new DelegateCommand<SettingsLocation?>(Clear);
             LoadData();
         }
 
         #region Properties
-        
+
         public bool Enabled
         {
             get { return _enabled; }
@@ -52,12 +56,32 @@ namespace AuraLedHelper
             }
         }
 
-        public ICommand ApplyCommand { get; }
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public ICommand ResetCommand { get; }
+        public bool HasError
+        {
+            get { return _hasError; }
+            set
+            {
+                _hasError = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand ApplyCommand { get; }
+        public ICommand LoadCommand { get; }
+        public ICommand ClearCommand { get; }
 
         #endregion
-        
+
         private void Reset()
         {
             var settings = SettingsProvider.LoadDefaultSettings();
@@ -71,21 +95,76 @@ namespace AuraLedHelper
             Color = settings.Color;
         }
 
-        private void Apply()
+        private void Apply(SettingsLocation? location)
         {
+            if (!location.HasValue) return;
             var settings = new Settings
             {
                 Enabled = Enabled,
                 Mode = OperationMode,
                 Color = Color
             };
-            //SettingsProvider.SaveSettings(settings);
+
+            try
+            {
+                SettingsProvider.SaveSettings(settings, location.Value);
+            }
+            catch (Exception ex)
+            {
+                ShowError("Error saving settings");
+                LogHelper.LogError(ex);
+            }
+        }
+
+        private void Load(SettingsLocation? location)
+        {
+            if (!location.HasValue) return;
+
+            Settings settings;
+            try
+            {
+                settings = SettingsProvider.LoadSettings(location.Value);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogError(ex);
+                ShowError("Error loading settings");
+                return;
+            }
+            if (settings == null)
+            {
+                ShowError($"No {location.Value} settings found");
+                return;
+            }
+            ApplySettings(settings);
+        }
+
+        private void Clear(SettingsLocation? location)
+        {
+            if (!location.HasValue) return;
+
+            try
+            {
+                SettingsProvider.RemoveSettings(location.Value);
+            }
+            catch (Exception ex)
+            {
+                ShowError("Error saving settings");
+                LogHelper.LogError(ex);
+            }
         }
 
         private void LoadData()
         {
             Reset();
         }
+
+        private void ShowError(string text)
+        {
+            ErrorMessage = text;
+            HasError = true;
+        }
+
 
         #region INotifyPropertyChanged
 

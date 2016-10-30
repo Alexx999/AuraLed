@@ -38,19 +38,20 @@
         <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Right">
             <GroupBox Header="Current User">
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="5" Content="Load"/>
-                    <Button Margin="5" Content="Clear"/>
-                    <Button Margin="5" Content="Apply"/>
+                    <Button Margin="5" Content="Load" Command="{Binding LoadCommand}" CommandParameter="{x:Static core:SettingsLocation.User}"/>
+                    <Button Margin="5" Content="Clear" Command="{Binding ClearCommand}" CommandParameter="{x:Static core:SettingsLocation.User}"/>
+                    <Button Margin="5" Content="Apply" Command="{Binding ApplyCommand}" CommandParameter="{x:Static core:SettingsLocation.User}"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="System Startup">
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="5" Content="Load"/>
-                    <Button Margin="5" Content="Clear"/>
-                    <Button Margin="5" Content="Apply"/>
+                    <Button Margin="5" Content="Load" Command="{Binding LoadCommand}" CommandParameter="{x:Static core:SettingsLocation.System}"/>
+                    <Button Margin="5" Content="Clear" Command="{Binding ClearCommand}" CommandParameter="{x:Static core:SettingsLocation.System}"/>
+                    <Button Margin="5" Content="Apply" Command="{Binding ApplyCommand}" CommandParameter="{x:Static core:SettingsLocation.System}"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
+        <TextBlock Margin="15,0,15,5" Foreground="{DynamicResource ControlsValidationBrush}" Text="{Binding ErrorMessage}" Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </StackPanel>
 </controls:MetroWindow>
 
