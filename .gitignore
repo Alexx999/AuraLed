@@ -1,0 +1,6 @@
+*.user
+/packages
+bin
+obj
+*.suo
+/Setup/Setup
