@@ -60,7 +60,7 @@ namespace AuraLedHelper
         
         private void Reset()
         {
-            var settings = SettingsProvider.LoadSettings();
+            var settings = SettingsProvider.LoadDefaultSettings();
             ApplySettings(settings);
         }
 
@@ -79,7 +79,7 @@ namespace AuraLedHelper
                 Mode = OperationMode,
                 Color = Color
             };
-            SettingsProvider.SaveSettings(settings);
+            //SettingsProvider.SaveSettings(settings);
         }
 
         private void LoadData()

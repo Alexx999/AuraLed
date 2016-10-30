@@ -9,10 +9,16 @@
         xmlns:core="clr-namespace:AuraLedHelper.Core;assembly=AuraLedHelper.Core"
         xmlns:controls1="clr-namespace:AuraLedHelper.Controls"
         mc:Ignorable="d" SnapsToDevicePixels="True"
-        Title="Aura LED Helper" SizeToContent="WidthAndHeight">
+        Title="Aura LED Helper" SizeToContent="WidthAndHeight"
+        ResizeMode="CanMinimize">
     <controls:MetroWindow.DataContext>
         <auraLedHelper:MainViewModel/>
     </controls:MetroWindow.DataContext>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Content="about" />
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
             <StackPanel Margin="5" Orientation="Vertical">
@@ -30,8 +36,20 @@
             <xctk:ColorCanvas Margin="5" SelectedColor="{Binding Color}" UsingAlphaChannel="False" BorderBrush="{x:Null}"/>
         </StackPanel>
         <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Margin="5" Content="Reset"/>
-            <Button Margin="5" Content="Apply"/>
+            <GroupBox Header="Current User">
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="5" Content="Load"/>
+                    <Button Margin="5" Content="Clear"/>
+                    <Button Margin="5" Content="Apply"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="System Startup">
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="5" Content="Load"/>
+                    <Button Margin="5" Content="Clear"/>
+                    <Button Margin="5" Content="Apply"/>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
     </StackPanel>
 </controls:MetroWindow>
