@@ -5,19 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:auraLedHelper="clr-namespace:AuraLedHelper"
         mc:Ignorable="d" SnapsToDevicePixels="True"
         Title="Aura LED Helper" SizeToContent="WidthAndHeight">
+    <controls:MetroWindow.DataContext>
+        <auraLedHelper:MainViewModel/>
+    </controls:MetroWindow.DataContext>
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
             <StackPanel Margin="5" Orientation="Vertical">
                 <CheckBox Margin="5" Content="Enabled"/>
                 <StackPanel Margin="5" Orientation="Vertical">
-                    <RadioButton Margin="5" Content="Static"/>
-                    <RadioButton Margin="5" Content="Breathing"/>
-                    <RadioButton Margin="5" Content="Strobing"/>
-                    <RadioButton Margin="5" Content="Color Cycle"/>
-                    <RadioButton Margin="5" Content="Music Effect"/>
-                    <RadioButton Margin="5" Content="CPU Temperature"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="Static"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="Breathing"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="Strobing"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="Color Cycle"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="Music Effect"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="CPU Temperature"/>
                 </StackPanel>
             </StackPanel>
             <!-- <xctk:ColorPicker Margin="5" Width="150" Height="25" SelectedColor="Red" DisplayColorAndName="False" ShowRecentColors="False" UsingAlphaChannel="False"/>-->
