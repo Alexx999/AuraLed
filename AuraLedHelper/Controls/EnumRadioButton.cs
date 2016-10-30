@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using AuraLedHelper.Extensions;
 
-namespace AuraLedHelper
+namespace AuraLedHelper.Controls
 {
     public class EnumRadioButton : RadioButton
     {

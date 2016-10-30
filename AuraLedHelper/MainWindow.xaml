@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow x:Class="AsusLedHelper.MainWindow"
+﻿<controls:MetroWindow x:Class="AuraLedHelper.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,6 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:auraLedHelper="clr-namespace:AuraLedHelper"
         xmlns:core="clr-namespace:AuraLedHelper.Core;assembly=AuraLedHelper.Core"
+        xmlns:controls1="clr-namespace:AuraLedHelper.Controls"
         mc:Ignorable="d" SnapsToDevicePixels="True"
         Title="Aura LED Helper" SizeToContent="WidthAndHeight">
     <controls:MetroWindow.DataContext>
@@ -17,12 +18,12 @@
             <StackPanel Margin="5" Orientation="Vertical">
                 <CheckBox Margin="5" Content="Enabled" IsChecked="{Binding Enabled}"/>
                 <StackPanel Margin="5" Orientation="Vertical">
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="Static" EnumValue="{x:Static core:AuraMode.Static}" TargetValue="{Binding OperationMode}"/>
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="Breathing" EnumValue="{x:Static core:AuraMode.Breathing}" TargetValue="{Binding OperationMode}"/>
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="Strobing" EnumValue="{x:Static core:AuraMode.Strobing}" TargetValue="{Binding OperationMode}"/>
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="Color Cycle" EnumValue="{x:Static core:AuraMode.Cycle}" TargetValue="{Binding OperationMode}"/>
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="Music Effect" EnumValue="{x:Static core:AuraMode.Music}" TargetValue="{Binding OperationMode}"/>
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="CPU Temperature" EnumValue="{x:Static core:AuraMode.Temp}" TargetValue="{Binding OperationMode}"/>
+                    <controls1:EnumRadioButton Margin="5" Content="Static" EnumValue="{x:Static core:AuraMode.Static}" TargetValue="{Binding OperationMode}"/>
+                    <controls1:EnumRadioButton Margin="5" Content="Breathing" EnumValue="{x:Static core:AuraMode.Breathing}" TargetValue="{Binding OperationMode}"/>
+                    <controls1:EnumRadioButton Margin="5" Content="Strobing" EnumValue="{x:Static core:AuraMode.Strobing}" TargetValue="{Binding OperationMode}"/>
+                    <controls1:EnumRadioButton Margin="5" Content="Color Cycle" EnumValue="{x:Static core:AuraMode.Cycle}" TargetValue="{Binding OperationMode}"/>
+                    <controls1:EnumRadioButton Margin="5" Content="Music Effect" EnumValue="{x:Static core:AuraMode.Music}" TargetValue="{Binding OperationMode}"/>
+                    <controls1:EnumRadioButton Margin="5" Content="CPU Temperature" EnumValue="{x:Static core:AuraMode.Temp}" TargetValue="{Binding OperationMode}"/>
                 </StackPanel>
             </StackPanel>
             <!-- <xctk:ColorPicker Margin="5" Width="150" Height="25" SelectedColor="Red" DisplayColorAndName="False" ShowRecentColors="False" UsingAlphaChannel="False"/>-->

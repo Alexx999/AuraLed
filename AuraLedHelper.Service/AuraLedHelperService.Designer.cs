@@ -1,4 +1,4 @@
-﻿namespace AsusLedHelperService
+﻿namespace AuraLedHelper.Service
 {
     partial class AuraLedHelperService
     {

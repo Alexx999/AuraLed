@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:auraLedHelper="clr-namespace:AuraLedHelper">
-    <Style TargetType="{x:Type auraLedHelper:EnumRadioButton}"  BasedOn="{StaticResource {x:Type RadioButton}}"></Style>
+                    xmlns:auraLedHelper="clr-namespace:AuraLedHelper"
+                    xmlns:controls="clr-namespace:AuraLedHelper.Controls">
+    <Style TargetType="{x:Type controls:EnumRadioButton}"  BasedOn="{StaticResource {x:Type RadioButton}}"></Style>
 </ResourceDictionary>

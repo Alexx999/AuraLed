@@ -162,7 +162,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AuraLedHelperCore\AuraLedHelper.Core.csproj">
+    <ProjectReference Include="..\AuraLedHelper.Core\AuraLedHelper.Core.csproj">
       <Project>{c3bb35c4-8d37-4458-9290-5c254e1a5ca8}</Project>
       <Name>AuraLedHelper.Core</Name>
     </ProjectReference>
