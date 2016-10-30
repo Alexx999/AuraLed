@@ -1,8 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO.Pipes;
 using System.Reflection;
+using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using AuraLedHelper.Core.Extensions;
 
 namespace AuraLedHelper
 {
@@ -12,6 +17,9 @@ namespace AuraLedHelper
     public partial class App : Application
     {
         private FieldInfo _fieldInfo;
+        private Guid _singleInstanceId = new Guid("19aaf8c3-6479-421d-91cc-02ed805cde5e");
+        private Mutex _mutex;
+        private CancellationTokenSource _cts = new CancellationTokenSource();
 
         public App()
         {
@@ -23,9 +31,78 @@ namespace AuraLedHelper
             TextOptions.TextFormattingModeProperty.OverrideMetadata(typeof(DependencyObject),
                 new FrameworkPropertyMetadata(TextFormattingMode.Display, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.Inherits));
             InitializeComponent();
+        }
 
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            CheckSingleInstance();
             var service = FirstFloor.XamlSpy.Services.XamlSpyService.Current;
             service.Connect("127.0.0.1", 4530, "01311");
+        }
+
+        private void CheckSingleInstance()
+        {
+            var mutexId = _singleInstanceId.ToString();
+            var userId = WindowsIdentity.GetCurrent().User?.Value;
+            if (userId != null)
+            {
+                mutexId += userId;
+            }
+
+            bool created;
+            var mutex = new Mutex(true, mutexId, out created);
+            if (created)
+            {
+                _mutex = mutex;
+                RunMessagePumpAsync();
+            }
+            else
+            {
+                SendSignal();
+                Shutdown();
+            }
+        }
+
+        private async void RunMessagePumpAsync()
+        {
+            var buffer = new byte[1];
+            while (!_cts.IsCancellationRequested)
+            {
+                var s = new NamedPipeServerStream(_singleInstanceId.ToString(), PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                await s.WaitForConnectionAsync();
+                await s.ReadAsync(buffer, 0, 1, _cts.Token);
+                s.Close();
+                Activate();
+            }
+        }
+
+        private void Activate()
+        {
+            if (MainWindow == null)
+            {
+                Shutdown();
+                return;
+            }
+            MainWindow.Activate();
+            MainWindow.Focus();
+            MainWindow.WindowState = WindowState.Normal;
+        }
+
+        private void SendSignal()
+        {
+            var s = new NamedPipeClientStream(".", _singleInstanceId.ToString(), PipeDirection.Out);
+            s.Connect();
+            s.WriteByte(1);
+            s.Close();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            _mutex?.ReleaseMutex();
+            _cts.Cancel();
+            base.OnExit(e);
         }
 
         private void CheckLicense(string licenseKey)
