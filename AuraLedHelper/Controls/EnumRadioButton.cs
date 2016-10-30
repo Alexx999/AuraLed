@@ -7,9 +7,19 @@ namespace AuraLedHelper.Controls
 {
     public class EnumRadioButton : RadioButton
     {
-        public static DependencyProperty EnumValueProperty = DependencyProperty.Register("EnumValue", typeof(object), typeof(EnumRadioButton));
-        public static DependencyProperty TargetValueProperty = DependencyProperty.Register("TargetValue", typeof(object), typeof(EnumRadioButton), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-        
+        public static DependencyProperty EnumValueProperty = DependencyProperty.Register("EnumValue", typeof(object), typeof(EnumRadioButton), new PropertyMetadata(EnumValueChangedCallback));
+        public static DependencyProperty TargetValueProperty = DependencyProperty.Register("TargetValue", typeof(object), typeof(EnumRadioButton), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, TargetValueChangedCallback));
+
+        private static void EnumValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as EnumRadioButton)?.CheckValues();
+        }
+
+        private static void TargetValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as EnumRadioButton)?.CheckValues();
+        }
+
         public EnumRadioButton()
         {
             this.OnDependencyPropertyChanged(rb => rb.IsChecked).Subscribe(IsCheckedChanged);
@@ -28,7 +38,10 @@ namespace AuraLedHelper.Controls
         public object EnumValue
         {
             get { return GetValue(EnumValueProperty); }
-            set { SetValue(EnumValueProperty, value); }
+            set
+            {
+                SetValue(EnumValueProperty, value);
+            }
         }
 
         public object TargetValue
@@ -37,12 +50,15 @@ namespace AuraLedHelper.Controls
             set
             {
                 SetValue(TargetValueProperty, value);
+            }
+        }
 
-                var tgtValue = Equals(EnumValue, TargetValue);
-                if (IsChecked != tgtValue)
-                {
-                    IsChecked = tgtValue;
-                }
+        private void CheckValues()
+        {
+            var tgtValue = Equals(EnumValue, TargetValue);
+            if (IsChecked != tgtValue)
+            {
+                IsChecked = tgtValue;
             }
         }
     }
