@@ -3,11 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuraLedHelperService", "AuraLedHelperService\AuraLedHelperService.csproj", "{F4B701EF-C12A-420F-B461-ECD98D892840}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuraLedHelper.Service", "AuraLedHelperService\AuraLedHelper.Service.csproj", "{F4B701EF-C12A-420F-B461-ECD98D892840}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuraLedHelper", "AuraLedHelper\AuraLedHelper.csproj", "{059590CA-A5FB-4B95-A874-DB1CB6919405}"
 EndProject
 Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Setup", "Setup\Setup.isproj", "{9BFA2320-8799-4709-B71D-54AEAC350BD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuraLedHelper.Core", "AuraLedHelperCore\AuraLedHelper.Core.csproj", "{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CE9214B-C130-408C-A155-E544D2752C64}"
+	ProjectSection(SolutionItems) = preProject
+		SharedAssemblyInfo.cs = SharedAssemblyInfo.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +52,16 @@ Global
 		{9BFA2320-8799-4709-B71D-54AEAC350BD1}.Release|Any CPU.Build.0 = SingleImage
 		{9BFA2320-8799-4709-B71D-54AEAC350BD1}.SingleImage|Any CPU.ActiveCfg = SingleImage
 		{9BFA2320-8799-4709-B71D-54AEAC350BD1}.SingleImage|Any CPU.Build.0 = SingleImage
+		{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{C3BB35C4-8D37-4458-9290-5C254E1A5CA8}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

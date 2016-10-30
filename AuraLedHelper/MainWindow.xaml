@@ -6,6 +6,7 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:auraLedHelper="clr-namespace:AuraLedHelper"
+        xmlns:core="clr-namespace:AuraLedHelper.Core;assembly=AuraLedHelper.Core"
         mc:Ignorable="d" SnapsToDevicePixels="True"
         Title="Aura LED Helper" SizeToContent="WidthAndHeight">
     <controls:MetroWindow.DataContext>
@@ -14,18 +15,18 @@
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
             <StackPanel Margin="5" Orientation="Vertical">
-                <CheckBox Margin="5" Content="Enabled"/>
+                <CheckBox Margin="5" Content="Enabled" IsChecked="{Binding Enabled}"/>
                 <StackPanel Margin="5" Orientation="Vertical">
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="Static"/>
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="Breathing"/>
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="Strobing"/>
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="Color Cycle"/>
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="Music Effect"/>
-                    <auraLedHelper:EnumRadioButton Margin="5" Content="CPU Temperature"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="Static" EnumValue="{x:Static core:AuraMode.Static}" TargetValue="{Binding OperationMode}"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="Breathing" EnumValue="{x:Static core:AuraMode.Breathing}" TargetValue="{Binding OperationMode}"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="Strobing" EnumValue="{x:Static core:AuraMode.Strobing}" TargetValue="{Binding OperationMode}"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="Color Cycle" EnumValue="{x:Static core:AuraMode.Cycle}" TargetValue="{Binding OperationMode}"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="Music Effect" EnumValue="{x:Static core:AuraMode.Music}" TargetValue="{Binding OperationMode}"/>
+                    <auraLedHelper:EnumRadioButton Margin="5" Content="CPU Temperature" EnumValue="{x:Static core:AuraMode.Temp}" TargetValue="{Binding OperationMode}"/>
                 </StackPanel>
             </StackPanel>
             <!-- <xctk:ColorPicker Margin="5" Width="150" Height="25" SelectedColor="Red" DisplayColorAndName="False" ShowRecentColors="False" UsingAlphaChannel="False"/>-->
-            <xctk:ColorCanvas Margin="5" SelectedColor="Red" UsingAlphaChannel="False" BorderBrush="{x:Null}"/>
+            <xctk:ColorCanvas Margin="5" SelectedColor="{Binding Color}" UsingAlphaChannel="False" BorderBrush="{x:Null}"/>
         </StackPanel>
         <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Margin="5" Content="Reset"/>

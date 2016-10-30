@@ -10,8 +10,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Steel.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
-                <ResourceDictionary Source="ColorPickerStyle.xaml"/>
-                <ResourceDictionary Source="Styles.xaml"/>
+                <ResourceDictionary Source="Controls/ColorPickerStyle.xaml"/>
+                <ResourceDictionary Source="Controls/EnumRadioButton.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
