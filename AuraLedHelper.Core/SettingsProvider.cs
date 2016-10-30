@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Security;
 using System.Windows.Media;
 using Microsoft.Win32;
 
@@ -7,7 +8,10 @@ namespace AuraLedHelper.Core
 {
     public static class SettingsProvider
     {
-        private const string RegistryKey = "Software\\AsusLedHelper\\Settings";
+        private const string ColorValueName = "Color";
+        private const string ModeValueName = "Mode";
+        private const string EnabledValueName = "Enabled";
+        private const string RegistryKey = "SOFTWARE\\AsusLedHelper\\Settings";
 
         private static Settings GetDefaults()
         {
@@ -36,7 +40,7 @@ namespace AuraLedHelper.Core
             }
             return null;
         }
-        
+
         private static RegistryKey GetKey(SettingsLocation location)
         {
             switch (location)
@@ -69,22 +73,73 @@ namespace AuraLedHelper.Core
 
             return GetDefaults();
         }
-
-
+        
         private static RegistryKey OpenSettingsKey(RegistryKey registryKey)
         {
             return registryKey.OpenSubKey(RegistryKey);
         }
 
-        public static void SaveSettings(Settings settings, SettingsLocation location)
+        private static RegistryKey CreateSettingsKey(RegistryKey registryKey)
         {
-            
+            return registryKey.CreateSubKey(RegistryKey);
         }
 
-        public static void RemoveSettings(SettingsLocation location)
+        public static bool SaveSettings(Settings settings, SettingsLocation location)
         {
-            
+            var key = GetKey(location);
+            RegistryKey settingsKey = null;
+            bool hasAccess = true;
+            try
+            {
+                settingsKey = CreateSettingsKey(key);
+            }
+            catch (Exception ex) when (ex is SecurityException || ex is UnauthorizedAccessException)
+            {
+                hasAccess = false;
+            }
+
+            if (hasAccess)
+            {
+                SaveToRegistry(settings, settingsKey);
+            }
+
+            return false;
         }
+
+        public static bool RemoveSettings(SettingsLocation location)
+        {
+            var key = GetKey(location);
+
+            return false;
+        }
+
+        #region Writing
+        
+        private static void SaveToRegistry(Settings settings, RegistryKey settingsKey)
+        {
+            SaveEnabled(settings.Enabled, settingsKey);
+            SaveColor(settings.Color, settingsKey);
+            SaveMode(settings.Mode, settingsKey);
+        }
+
+        private static void SaveEnabled(bool value, RegistryKey key)
+        {
+            key.SetValue(EnabledValueName, value.ToString(CultureInfo.InvariantCulture), RegistryValueKind.String);
+        }
+
+        private static void SaveMode(AuraMode value, RegistryKey key)
+        {
+            key.SetValue(ModeValueName, value.ToString(), RegistryValueKind.String);
+        }
+
+        private static void SaveColor(Color value, RegistryKey key)
+        {
+            var intValue = (value.A << 24) | (value.R << 16) | (value.G << 8) | value.B;
+
+            key.SetValue(ColorValueName, intValue.ToString("X", CultureInfo.InvariantCulture));
+        }
+
+        #endregion
 
         #region Reading
 
@@ -114,7 +169,7 @@ namespace AuraLedHelper.Core
 
         private static Color? GetColor(RegistryKey key)
         {
-            var value = key.GetValue("Color") as string;
+            var value = key.GetValue(ColorValueName) as string;
             int intValue;
 
             if (!int.TryParse(value, NumberStyles.HexNumber | NumberStyles.AllowHexSpecifier | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, CultureInfo.InvariantCulture, out intValue))
@@ -130,7 +185,7 @@ namespace AuraLedHelper.Core
 
         private static AuraMode? GetMode(RegistryKey key)
         {
-            var value = key.GetValue("Mode") as string;
+            var value = key.GetValue(ModeValueName) as string;
             AuraMode result;
 
             if (!Enum.TryParse(value, true, out result))
@@ -142,7 +197,7 @@ namespace AuraLedHelper.Core
 
         private static bool? GetEnabled(RegistryKey key)
         {
-            var value = key.GetValue("Enabled") as string;
+            var value = key.GetValue(EnabledValueName) as string;
             bool result;
 
             if (!bool.TryParse(value, out result))

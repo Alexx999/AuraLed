@@ -97,6 +97,7 @@ namespace AuraLedHelper
 
         private void Apply(SettingsLocation? location)
         {
+            ClearError();
             if (!location.HasValue) return;
             var settings = new Settings
             {
@@ -105,19 +106,33 @@ namespace AuraLedHelper
                 Color = Color
             };
 
+            bool success;
             try
             {
-                SettingsProvider.SaveSettings(settings, location.Value);
+                success = SettingsProvider.SaveSettings(settings, location.Value);
             }
             catch (Exception ex)
             {
-                ShowError("Error saving settings");
                 LogHelper.LogError(ex);
+                ShowError($"Error saving {location.Value} settings");
+                return;
             }
+
+            if (!success)
+            {
+                ShowError($"Removing {location.Value} failed");
+            }
+        }
+
+        private void ClearError()
+        {
+            HasError = false;
+            ErrorMessage = string.Empty;
         }
 
         private void Load(SettingsLocation? location)
         {
+            ClearError();
             if (!location.HasValue) return;
 
             Settings settings;
@@ -128,7 +143,7 @@ namespace AuraLedHelper
             catch (Exception ex)
             {
                 LogHelper.LogError(ex);
-                ShowError("Error loading settings");
+                ShowError($"Error loading {location.Value} settings");
                 return;
             }
             if (settings == null)
@@ -141,16 +156,24 @@ namespace AuraLedHelper
 
         private void Clear(SettingsLocation? location)
         {
+            ClearError();
             if (!location.HasValue) return;
 
+            bool success;
             try
             {
-                SettingsProvider.RemoveSettings(location.Value);
+                success = SettingsProvider.RemoveSettings(location.Value);
             }
             catch (Exception ex)
             {
-                ShowError("Error saving settings");
                 LogHelper.LogError(ex);
+                ShowError($"Error removing {location.Value} settings");
+                return;
+            }
+
+            if (!success)
+            {
+                ShowError($"Removing {location.Value} failed");
             }
         }
 
