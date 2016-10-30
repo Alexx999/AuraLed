@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -61,16 +60,31 @@ namespace AuraLedHelper
         
         private void Reset()
         {
-            throw new NotImplementedException();
+            var settings = SettingsProvider.LoadSettings();
+            ApplySettings(settings);
+        }
+
+        private void ApplySettings(Settings settings)
+        {
+            Enabled = settings.Enabled;
+            OperationMode = settings.Mode;
+            Color = settings.Color;
         }
 
         private void Apply()
         {
-            throw new NotImplementedException();
+            var settings = new Settings
+            {
+                Enabled = Enabled,
+                Mode = OperationMode,
+                Color = Color
+            };
+            SettingsProvider.SaveSettings(settings);
         }
 
         private void LoadData()
         {
+            Reset();
         }
 
         #region INotifyPropertyChanged

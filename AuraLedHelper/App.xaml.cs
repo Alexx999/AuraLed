@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
@@ -22,7 +23,6 @@ namespace AuraLedHelper
             TextOptions.TextFormattingModeProperty.OverrideMetadata(typeof(DependencyObject),
                 new FrameworkPropertyMetadata(TextFormattingMode.Display, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.Inherits));
             InitializeComponent();
-
 
             var service = FirstFloor.XamlSpy.Services.XamlSpyService.Current;
             service.Connect("127.0.0.1", 4530, "01311");
