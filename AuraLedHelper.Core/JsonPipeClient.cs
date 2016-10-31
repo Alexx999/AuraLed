@@ -15,7 +15,7 @@ namespace AuraLedHelper.Core
         private readonly ConcurrentDictionary<int, TaskCompletionSource<ServiceMessage>> _pendingRequests = new ConcurrentDictionary<int, TaskCompletionSource<ServiceMessage>>();
         private int _counter;
 
-        public JsonPipeClient(string name, Func<string, Type> typeResolver)
+        public JsonPipeClient(string name, Func<ServiceCommand, Type> typeResolver)
         {
             var pipe = new NamedPipeClientStream(".", name, PipeDirection.InOut, PipeOptions.Asynchronous);
             pipe.Connect(1);

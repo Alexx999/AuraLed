@@ -6,10 +6,10 @@ namespace AuraLedHelper.Core
 {
     public class JsonMessageProcessor : IMessageProcessor
     {
-        private readonly Func<string, Type> _typeFunc;
+        private readonly Func<ServiceCommand, Type> _typeFunc;
         private readonly Action<ServiceMessage> _callback;
 
-        public JsonMessageProcessor(Func<string, Type> typeFunc, Action<ServiceMessage> callback)
+        public JsonMessageProcessor(Func<ServiceCommand, Type> typeFunc, Action<ServiceMessage> callback)
         {
             _typeFunc = typeFunc;
             _callback = callback;
@@ -21,7 +21,7 @@ namespace AuraLedHelper.Core
             var obj = JObject.Parse(str);
 
             JToken cmd;
-
+            
             if (!obj.TryGetValue("Command", StringComparison.InvariantCultureIgnoreCase, out cmd))
             {
                 return false;
@@ -31,7 +31,8 @@ namespace AuraLedHelper.Core
 
             try
             {
-                type = _typeFunc(cmd.ToString());
+                var cmdValue = cmd.ToObject<ServiceCommand>();
+                type = _typeFunc(cmdValue);
             }
             catch (Exception ex)
             {
