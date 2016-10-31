@@ -128,7 +128,7 @@ namespace AuraLedHelper.Core
             if (hasAccess)
             {
                 SaveToRegistry(settings, settingsKey);
-                return _proxy?.ReloadSettingsAsync() ?? Task.FromResult(false);
+                return _proxy?.ReloadSettingsAsync() ?? NoProxyRealoadResult();
             }
 
             return _proxy?.ApplySettingsAsync(settings, location) ?? Task.FromResult(false);
@@ -152,6 +152,11 @@ namespace AuraLedHelper.Core
             }
 
             return _proxy?.ClearSettingsAsync(location) ?? Task.FromResult(false);
+        }
+
+        protected virtual Task<bool> NoProxyRealoadResult()
+        {
+            return Task.FromResult(false);
         }
 
         #region Writing

@@ -14,6 +14,7 @@ namespace AuraLedHelper.Service
             if (!settings.Enabled)
             {
                 DisableAura();
+                return;
             }
 
             switch (settings.Mode)
@@ -43,19 +44,31 @@ namespace AuraLedHelper.Service
 
         private static void SetStrobing(Color color)
         {
+            SetColorMode(color, 3);
         }
 
         private static void SetBreathing(Color color)
         {
+            SetColorMode(color, 2);
         }
 
         private static void SetStaticColor(Color color)
         {
+            SetColorMode(color, 1);
+        }
+
+        private static void SetColorMode(Color color, int mode)
+        {
             axdata axdata = new axdataClass();
             axdata.iAcpiSetItem(0x13060041, 0, 1);
 
-            var intValue = (color.R << 8) | (color.G << 16) | (color.B << 24) | 1;
+            var intValue = ColorToInt(color) | mode;
             axdata.iAcpiSetItem(0x13060042, (uint) intValue, 1);
+        }
+
+        private static int ColorToInt(Color color)
+        {
+            return (color.R << 8) | (color.G << 16) | (color.B << 24);
         }
 
         private static void EnableColorCycle()
@@ -67,6 +80,10 @@ namespace AuraLedHelper.Service
 
         private static void DisableAura()
         {
+            axdata axdata = new axdataClass();
+            axdata.iAcpiSetItem(0x13060041, 0, 1);
+            axdata.iAcpiSetItem(0x13060042, 1, 1);
+            axdata.iAcpiSetItem(0x13060042, 0, 1);
         }
     }
 }

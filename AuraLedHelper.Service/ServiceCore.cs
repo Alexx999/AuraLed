@@ -8,7 +8,7 @@ namespace AuraLedHelper.Service
     class ServiceCore : IDisposable
     {
         private readonly JsonPipeServer _server;
-        private readonly SettingsProvider _settingsProvider = new SettingsProvider();
+        private readonly SettingsProvider _settingsProvider = new ServerSettingsProvider();
         private static readonly Dictionary<ServiceCommand, Type> TypeMap = new Dictionary<ServiceCommand, Type>
         {
             [ServiceCommand.ApplySettings] = typeof(ServiceMessage<SettingsAndLocation>),
@@ -35,6 +35,7 @@ namespace AuraLedHelper.Service
         {
             var param = (ServiceMessage<SettingsAndLocation>) serviceMessage;
             var result = await _settingsProvider.SaveSettingsAsync(param.Payload.Settings, param.Payload.Location);
+            LoadSettings();
             return result ? ServiceCommand.ResponseOk : ServiceCommand.ResponseFail;
         }
 

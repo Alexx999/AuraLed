@@ -55,6 +55,7 @@
     <Compile Include="PipeMessenger.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerSettingsProvider.cs" />
     <Compile Include="ServiceCommand.cs" />
     <Compile Include="ServiceConfig.cs" />
     <Compile Include="ServiceMessage.cs" />
