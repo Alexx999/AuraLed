@@ -28,8 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            // 
+            // AuraLedHelperService
+            // 
+            this.CanHandleSessionChangeEvent = true;
             this.ServiceName = "Aura LED Helper Service";
+
         }
 
         #endregion

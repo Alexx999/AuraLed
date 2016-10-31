@@ -16,12 +16,12 @@ namespace AuraLedHelper.Core
     {
         private readonly string _name;
         private readonly Func<ServiceCommand, Type> _typeResolver;
-        private readonly Func<ServiceMessage, ServiceCommand> _processor;
+        private readonly Func<ServiceMessage, Task<ServiceCommand>> _processor;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private int _counter;
         private readonly ConcurrentBag<PipeMessenger> _messengers = new ConcurrentBag<PipeMessenger>();
 
-        public JsonPipeServer(string name, Func<ServiceCommand, Type> typeResolver, Func<ServiceMessage, ServiceCommand> processor)
+        public JsonPipeServer(string name, Func<ServiceCommand, Type> typeResolver, Func<ServiceMessage, Task<ServiceCommand>> processor)
         {
             _name = name;
             _typeResolver = typeResolver;
@@ -54,7 +54,7 @@ namespace AuraLedHelper.Core
         {
             var response = _processor(serviceMessage);
 
-            await SendResponseAsync(messenger, new ServiceMessage(response));
+            await SendResponseAsync(messenger, new ServiceMessage(await response));
         }
 
         public Task SendResponseAsync(PipeMessenger messenger, ServiceMessage message)

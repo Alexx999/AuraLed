@@ -48,6 +48,21 @@ namespace AuraLedHelper.Core
             return null;
         }
 
+        public Settings LoadSettingsForUser(string sid)
+        {
+            var key = GetKeyForSid(sid);
+            if (key != null)
+            {
+                return LoadFromRegistry(key);
+            }
+            return null;
+        }
+
+        private RegistryKey GetKeyForSid(string sid)
+        {
+            return Registry.Users.OpenSubKey(sid);
+        }
+
         private static RegistryKey GetKey(SettingsLocation location)
         {
             switch (location)

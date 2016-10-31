@@ -1,45 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AuraLedHelper.Core;
 
 namespace AuraLedHelper.Service
 {
-    class ServiceCore
+    class ServiceCore : IDisposable
     {
         private readonly JsonPipeServer _server;
+        private readonly SettingsProvider _settingsProvider = new SettingsProvider();
         private static readonly Dictionary<ServiceCommand, Type> TypeMap = new Dictionary<ServiceCommand, Type>
         {
             [ServiceCommand.ApplySettings] = typeof(ServiceMessage<SettingsAndLocation>),
             [ServiceCommand.ClearSettings] = typeof(ServiceMessage<SettingsLocation>)
         };
 
-        private static readonly Dictionary<ServiceCommand, Func<ServiceMessage, ServiceCommand>> MethodMap = new Dictionary<ServiceCommand, Func<ServiceMessage, ServiceCommand>>
-        {
-            [ServiceCommand.ApplySettings] = ApplySettings,
-            [ServiceCommand.ClearSettings] = ClearSettings,
-            [ServiceCommand.ReloadSettings] = ReloadSettings
-        };
+        private readonly Dictionary<ServiceCommand, Func<ServiceMessage, Task<ServiceCommand>>> _methodMap;
+        private string _activeUser;
 
-        private static ServiceCommand ReloadSettings(ServiceMessage serviceMessage)
+        private Task<ServiceCommand> ReloadSettings(ServiceMessage serviceMessage)
         {
-            return ServiceCommand.ResponseOk;
+            LoadSettings();
+            return Task.FromResult(ServiceCommand.ResponseOk);
         }
 
-        private static ServiceCommand ClearSettings(ServiceMessage serviceMessage)
+        private async Task<ServiceCommand> ClearSettings(ServiceMessage serviceMessage)
         {
             var param = (ServiceMessage<SettingsLocation>)serviceMessage;
-            return ServiceCommand.ResponseOk;
+            var result = await _settingsProvider.RemoveSettingsAsync(param.Payload);
+            return result ? ServiceCommand.ResponseOk : ServiceCommand.ResponseFail;
         }
 
-        private static ServiceCommand ApplySettings(ServiceMessage serviceMessage)
+        private async Task<ServiceCommand> ApplySettings(ServiceMessage serviceMessage)
         {
             var param = (ServiceMessage<SettingsAndLocation>) serviceMessage;
-            return ServiceCommand.ResponseOk;
+            var result = await _settingsProvider.SaveSettingsAsync(param.Payload.Settings, param.Payload.Location);
+            return result ? ServiceCommand.ResponseOk : ServiceCommand.ResponseFail;
         }
 
         public ServiceCore()
         {
             _server = new JsonPipeServer(ServiceConfig.PipeName, TypeResolver, Processor);
+            _methodMap = new Dictionary<ServiceCommand, Func<ServiceMessage, Task<ServiceCommand>>>
+            {
+                [ServiceCommand.ApplySettings] = ApplySettings,
+                [ServiceCommand.ClearSettings] = ClearSettings,
+                [ServiceCommand.ReloadSettings] = ReloadSettings
+            };
         }
 
         public async void StartServiceCore()
@@ -47,14 +54,14 @@ namespace AuraLedHelper.Service
             await _server.StartServerAsync();
         }
 
-        private ServiceCommand Processor(ServiceMessage serviceMessage)
+        private Task<ServiceCommand> Processor(ServiceMessage serviceMessage)
         {
-            Func<ServiceMessage, ServiceCommand> method;
-            if (MethodMap.TryGetValue(serviceMessage.Command, out method))
+            Func<ServiceMessage, Task<ServiceCommand>> method;
+            if (_methodMap.TryGetValue(serviceMessage.Command, out method))
             {
                 return method(serviceMessage);
             }
-            return ServiceCommand.ResponseFail;
+            return Task.FromResult(ServiceCommand.ResponseFail);
         }
 
         private Type TypeResolver(ServiceCommand key)
@@ -66,6 +73,50 @@ namespace AuraLedHelper.Service
                 return type;
             }
             return typeof(ServiceMessage);
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            _server.Dispose();
+        }
+
+        public void LoadSettings()
+        {
+            var sid = WtsHelper.GetCurrentAccountSID();
+            _activeUser = sid;
+            LoadSettings(sid);
+        }
+
+        public void LoadSettings(string sid)
+        {
+            var settings = LoadSettingsForUser(sid);
+            if (settings == null)
+            {
+                return;
+            }
+
+            AuraController.ApplySettings(settings);
+        }
+
+        private Settings LoadSettingsForUser(string sid)
+        {
+            if (sid == null)
+            {
+                return _settingsProvider.LoadSettings(SettingsLocation.System);
+            }
+            return _settingsProvider.LoadSettingsForUser(sid);
+        }
+
+        public void UserChange()
+        {
+            var sid = WtsHelper.GetCurrentAccountSID();
+            if (Equals(sid, _activeUser))
+            {
+                return;
+            }
+
+            LoadSettings(sid);
         }
     }
 }

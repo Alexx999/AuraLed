@@ -16,9 +16,9 @@ namespace AuraLedHelper
     public partial class App : Application
     {
         private FieldInfo _fieldInfo;
-        private Guid _singleInstanceId = new Guid("19aaf8c3-6479-421d-91cc-02ed805cde5e");
+        private readonly Guid _singleInstanceId = new Guid("19aaf8c3-6479-421d-91cc-02ed805cde5e");
         private Mutex _mutex;
-        private CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         public App()
         {

@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuraController.cs" />
     <Compile Include="AuraLedHelperService.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -64,6 +65,7 @@
     <Compile Include="ServiceCore.cs" />
     <Compile Include="ServiceState.cs" />
     <Compile Include="ServiceStatus.cs" />
+    <Compile Include="WtsHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -76,7 +78,7 @@
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +88,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AuraLedHelperService.resx">
+      <DependentUpon>AuraLedHelperService.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </EmbeddedResource>

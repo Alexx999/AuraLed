@@ -6,9 +6,6 @@ namespace AuraLedHelper.Service
 {
     public partial class AuraLedHelperService : ServiceBase
     {
-        [DllImport("advapi32.dll", SetLastError = true)]
-        private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
-        
         private ServiceCore _core;
 
         public AuraLedHelperService()
@@ -18,21 +15,21 @@ namespace AuraLedHelper.Service
 
         protected override void OnStart(string[] args)
         {
-            // Update the service state to Start Pending.
-            ServiceStatus serviceStatus = new ServiceStatus();
-            serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
-            serviceStatus.dwWaitHint = 50;
-            SetServiceStatus(ServiceHandle, ref serviceStatus);
-
             _core = new ServiceCore();
             _core.StartServiceCore();
-
-            serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
-            SetServiceStatus(ServiceHandle, ref serviceStatus);
+            _core.LoadSettings();
         }
 
         protected override void OnStop()
         {
+            _core.Dispose();
+        }
+
+        protected override void OnSessionChange(SessionChangeDescription cd)
+        {
+            base.OnSessionChange(cd);
+
+            _core.UserChange();
         }
     }
 }
