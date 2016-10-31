@@ -37,8 +37,6 @@ namespace AuraLedHelper
             base.OnStartup(e);
 
             CheckSingleInstance();
-            var service = FirstFloor.XamlSpy.Services.XamlSpyService.Current;
-            service.Connect("127.0.0.1", 4530, "01311");
         }
 
         private void CheckSingleInstance()
