@@ -1,24 +1,31 @@
 ﻿using System;
 using System.Globalization;
 using System.Security;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using Microsoft.Win32;
 
 namespace AuraLedHelper.Core
 {
-    public static class SettingsProvider
+    public class SettingsProvider
     {
         private const string ColorValueName = "Color";
         private const string ModeValueName = "Mode";
         private const string EnabledValueName = "Enabled";
         private const string RegistryKey = "SOFTWARE\\AsusLedHelper\\Settings";
+        private ServiceProxy _proxy;
 
         private static Settings GetDefaults()
         {
             return new Settings {Enabled = false, Mode = AuraMode.Breathing, Color = Colors.Red};
         }
 
-        public static Settings LoadDefaultSettings()
+        public void ConnectToService()
+        {
+            _proxy = new ServiceProxy();
+        }
+
+        public Settings LoadDefaultSettings()
         {
             try
             {
@@ -31,7 +38,7 @@ namespace AuraLedHelper.Core
             }
         }
 
-        public static Settings LoadSettings(SettingsLocation location)
+        public Settings LoadSettings(SettingsLocation location)
         {
             var key = GetKey(location);
             if (key != null)
@@ -58,7 +65,7 @@ namespace AuraLedHelper.Core
             }
         }
 
-        private static Settings LoadSettingsInternal()
+        private Settings LoadSettingsInternal()
         {
             var settings = LoadSettings(SettingsLocation.User);
             if (settings != null)
@@ -84,7 +91,12 @@ namespace AuraLedHelper.Core
             return registryKey.CreateSubKey(RegistryKey);
         }
 
-        public static bool SaveSettings(Settings settings, SettingsLocation location)
+        private static void DeleteSettingsKey(RegistryKey registryKey)
+        {
+            registryKey.DeleteSubKeyTree(RegistryKey);
+        }
+
+        public Task<bool> SaveSettingsAsync(Settings settings, SettingsLocation location)
         {
             var key = GetKey(location);
             RegistryKey settingsKey = null;
@@ -101,16 +113,30 @@ namespace AuraLedHelper.Core
             if (hasAccess)
             {
                 SaveToRegistry(settings, settingsKey);
+                return _proxy?.ReloadSettingsAsync() ?? Task.FromResult(false);
             }
 
-            return false;
+            return _proxy?.ApplySettingsAsync(settings, location) ?? Task.FromResult(false);
         }
 
-        public static bool RemoveSettings(SettingsLocation location)
+        public Task<bool> RemoveSettingsAsync(SettingsLocation location)
         {
             var key = GetKey(location);
+            try
+            {
+                DeleteSettingsKey(key);
+                return Task.FromResult(true);
+            }
+            catch (Exception ex) when (ex is SecurityException || ex is UnauthorizedAccessException)
+            {
+            }
+            catch (ArgumentException)
+            {
+                //Subkey doesn't exist
+                return Task.FromResult(true);
+            }
 
-            return false;
+            return _proxy?.ClearSettingsAsync(location) ?? Task.FromResult(false);
         }
 
         #region Writing

@@ -1,9 +1,11 @@
-﻿namespace AuraLedHelper.Core
+﻿using System.Threading.Tasks;
+
+namespace AuraLedHelper.Core
 {
     public interface IService
     {
-        void ReloadSettings();
-        void ApplySettings(Settings settings, SettingsLocation location);
-        void ClearSettings(SettingsLocation location);
+        Task<bool> ReloadSettingsAsync();
+        Task<bool> ApplySettingsAsync(Settings settings, SettingsLocation location);
+        Task<bool> ClearSettingsAsync(SettingsLocation location);
     }
 }

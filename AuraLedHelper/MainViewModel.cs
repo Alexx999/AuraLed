@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using AuraLedHelper.Core;
@@ -18,10 +19,25 @@ namespace AuraLedHelper
 
         public MainViewModel()
         {
-            ApplyCommand = new DelegateCommand<SettingsLocation?>(Apply);
+            SettingsProvider = new SettingsProvider();
+            ApplyCommand = DelegateCommand<SettingsLocation?>.FromAsyncHandler(ApplyAsync);
             LoadCommand = new DelegateCommand<SettingsLocation?>(Load);
-            ClearCommand = new DelegateCommand<SettingsLocation?>(Clear);
+            ClearCommand = DelegateCommand<SettingsLocation?>.FromAsyncHandler(ClearAsync);
+            ConnectToService();
             LoadData();
+        }
+
+        private void ConnectToService()
+        {
+            try
+            {
+                SettingsProvider.ConnectToService();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogError(ex);
+                ShowError("Error connecting to service");
+            }
         }
 
         #region Properties
@@ -76,6 +92,8 @@ namespace AuraLedHelper
             }
         }
 
+        private SettingsProvider SettingsProvider { get; }
+
         public ICommand ApplyCommand { get; }
         public ICommand LoadCommand { get; }
         public ICommand ClearCommand { get; }
@@ -95,7 +113,7 @@ namespace AuraLedHelper
             Color = settings.Color;
         }
 
-        private void Apply(SettingsLocation? location)
+        private async Task ApplyAsync(SettingsLocation? location)
         {
             ClearError();
             if (!location.HasValue) return;
@@ -109,18 +127,18 @@ namespace AuraLedHelper
             bool success;
             try
             {
-                success = SettingsProvider.SaveSettings(settings, location.Value);
+                success = await SettingsProvider.SaveSettingsAsync(settings, location.Value);
             }
             catch (Exception ex)
             {
                 LogHelper.LogError(ex);
-                ShowError($"Error saving {location.Value} settings");
+                ShowError($"Error saving {location.Value} settings, exception logged");
                 return;
             }
 
             if (!success)
             {
-                ShowError($"Removing {location.Value} failed");
+                ShowError($"Applying settings to {location.Value} failed");
             }
         }
 
@@ -143,7 +161,7 @@ namespace AuraLedHelper
             catch (Exception ex)
             {
                 LogHelper.LogError(ex);
-                ShowError($"Error loading {location.Value} settings");
+                ShowError($"Error loading {location.Value} settings, exception logged");
                 return;
             }
             if (settings == null)
@@ -154,7 +172,7 @@ namespace AuraLedHelper
             ApplySettings(settings);
         }
 
-        private void Clear(SettingsLocation? location)
+        private async Task ClearAsync(SettingsLocation? location)
         {
             ClearError();
             if (!location.HasValue) return;
@@ -162,18 +180,18 @@ namespace AuraLedHelper
             bool success;
             try
             {
-                success = SettingsProvider.RemoveSettings(location.Value);
+                success = await SettingsProvider.RemoveSettingsAsync(location.Value);
             }
             catch (Exception ex)
             {
                 LogHelper.LogError(ex);
-                ShowError($"Error removing {location.Value} settings");
+                ShowError($"Error removing {location.Value} settings, exception logged");
                 return;
             }
 
             if (!success)
             {
-                ShowError($"Removing {location.Value} failed");
+                ShowError($"Removing {location.Value} settings failed");
             }
         }
 
