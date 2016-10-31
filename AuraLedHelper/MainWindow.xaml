@@ -16,7 +16,7 @@
     </controls:MetroWindow.DataContext>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <Button Content="about" />
+            <Button Content="about" Click="AboutClick" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <StackPanel Orientation="Vertical">
