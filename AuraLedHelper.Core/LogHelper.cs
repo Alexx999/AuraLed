@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
@@ -9,6 +10,11 @@ namespace AuraLedHelper.Core
     {
         public static void LogError(Exception ex)
         {
+            if (Debugger.IsAttached)
+            {
+                Debugger.Break();
+            }
+
             try
             {
                 LogToFolder(GetLogPath(), ex);

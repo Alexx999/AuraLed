@@ -1,9 +1,14 @@
-﻿using System.ServiceProcess;
+﻿using System;
+using System.Runtime.InteropServices;
+using System.ServiceProcess;
 
 namespace AuraLedHelper.Service
 {
     public partial class AuraLedHelperService : ServiceBase
     {
+        [DllImport("advapi32.dll", SetLastError = true)]
+        private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
+
         public AuraLedHelperService()
         {
             InitializeComponent();
@@ -11,6 +16,14 @@ namespace AuraLedHelper.Service
 
         protected override void OnStart(string[] args)
         {
+            // Update the service state to Start Pending.
+            ServiceStatus serviceStatus = new ServiceStatus();
+            serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
+            serviceStatus.dwWaitHint = 50;
+            SetServiceStatus(ServiceHandle, ref serviceStatus);
+
+            serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
+            SetServiceStatus(ServiceHandle, ref serviceStatus);
         }
 
         protected override void OnStop()

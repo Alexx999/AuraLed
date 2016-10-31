@@ -4,7 +4,6 @@ using System.IO.Pipes;
 using System.Reflection;
 using System.Security.Principal;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using AuraLedHelper.Core.Extensions;
