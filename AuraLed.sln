@@ -18,6 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuraLedHelper.Core", "AuraL
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CE9214B-C130-408C-A155-E544D2752C64}"
 	ProjectSection(SolutionItems) = preProject
+		AuraLed.ico = AuraLed.ico
 		SharedAssemblyInfo.cs = SharedAssemblyInfo.cs
 	EndProjectSection
 EndProject
